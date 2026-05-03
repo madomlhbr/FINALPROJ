@@ -280,3 +280,63 @@ def payslip_view(request, pk):
         'payslip': payslip,
         'is_admin': is_admin,
     })
+
+
+def payslips_page(request):
+    if request.method == 'POST':
+        payroll_for = request.POST.get('payroll_for')
+        month = request.POST.get('month')
+        year = request.POST.get('year')
+        cycle = int(request.POST.get('cycle'))
+        
+        employees = Employee.objects.all() if payroll_for == 'All' else Employee.objects.filter(id_number=payroll_for)
+        
+        for emp in employees:
+            if Payslip.objects.filter(id_number=emp, month=month, year=year, pay_cycle=cycle).exists():
+                messages.error(request, f"Payslip for {emp.name} in this cycle already exists.")
+                continue
+
+            rate = emp.rate
+            cycle_rate = rate / 2
+            allowance = emp.allowance if emp.allowance else 0
+            overtime = emp.overtime_pay if emp.overtime_pay else 0
+
+            pag_ibig = 0.0
+            philhealth = 0.0
+            sss = 0.0
+            
+            if cycle == 1:
+                pag_ibig = 100.0
+                taxable_income = cycle_rate + allowance + overtime - pag_ibig
+            elif cycle == 2:
+                philhealth = rate * 0.04
+                sss = rate * 0.045
+                taxable_income = cycle_rate + allowance + overtime - philhealth - sss
+            
+            tax = taxable_income * 0.2
+            total_pay = taxable_income - tax
+
+            Payslip.objects.create(
+                id_number=emp,
+                month=month,
+                date_range="1-15" if cycle == 1 else "16-30",
+                year=year,
+                pay_cycle=cycle,
+                rate=rate,
+                earnings_allowance=allowance,
+                deductions_tax=tax,
+                deductions_health=philhealth,
+                pag_ibig=pag_ibig,
+                sss=sss,
+                overtime=overtime,
+                total_pay=total_pay
+            )
+            
+            emp.resetOvertime()
+            emp.save()
+            
+        return redirect('payslips')
+
+    payslips = Payslip.objects.all()
+    employees = Employee.objects.all()
+    return render(request, 'payslips.html', {'payslips': payslips, 'employees': employees})

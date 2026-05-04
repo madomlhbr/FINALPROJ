@@ -1,0 +1,63 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %}Employees — Shemu{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Employees</h1>
+  <a href="{% url 'employee_create' %}" class="btn btn-primary">+ New Employee</a>
+</div>
+
+<div class="page-content">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>ID Number</th>
+          <th>Rate</th>
+          <th>Allowance</th>
+          <th>Overtime Pay</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emp in employees %}
+        <tr>
+          <td><strong>{{ emp.name }}</strong></td>
+          <td>{{ emp.id_number }}</td>
+          <td>₱{{ emp.rate|floatformat:2 }}</td>
+          <td>{% if emp.allowance %}₱{{ emp.allowance|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td>₱{{ emp.overtime_pay|default:"0.00"|floatformat:2 }}</td>
+          <td>
+            <div class="actions-cell">
+              <div class="action-row">
+                <a href="{% url 'employee_update' emp.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                <form method="post" action="{% url 'employee_delete' emp.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button class="btn btn-danger btn-sm" type="submit"
+                    onclick="return confirm('Delete {{ emp.name }}?')">Delete</button>
+                </form>
+              </div>
+              <div class="action-row">
+                <form method="post" action="{% url 'employee_overtime' emp.pk %}" style="display:flex;gap:6px;align-items:center;">
+                  {% csrf_token %}
+                  <input class="ot-input" type="number" name="overtime_hours" placeholder="Hours" min="0" step="0.5">
+                  <button class="btn btn-teal btn-sm" type="submit">+ Overtime</button>
+                </form>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" style="text-align:center; color: var(--gray-400); padding: 32px;">
+            No employees yet. Click <strong>+ New Employee</strong> to add one.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

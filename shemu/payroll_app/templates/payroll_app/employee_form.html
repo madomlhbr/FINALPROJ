@@ -1,0 +1,46 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %}{{ action }} Employee — Shemu{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>{{ action }} Employee</h1>
+</div>
+
+<div class="page-content">
+  <div class="form-wrap">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" type="text" name="name"
+               value="{{ form_data.name|default:'' }}" placeholder="Full name" required>
+      </div>
+
+      <div class="form-group">
+        <label>ID Number</label>
+        <input class="form-control" type="text" name="id_number"
+               value="{{ form_data.id_number|default:'' }}" placeholder="e.g. 150726" required>
+      </div>
+
+      <div class="form-group">
+        <label>Monthly Rate (₱)</label>
+        <input class="form-control" type="number" name="rate" step="0.01"
+               value="{{ form_data.rate|default:'' }}" placeholder="e.g. 25000" required>
+      </div>
+
+      <div class="form-group">
+        <label>Allowance (₱) <span>(optional)</span></label>
+        <input class="form-control" type="number" name="allowance" step="0.01"
+               value="{{ form_data.allowance|default:'' }}" placeholder="e.g. 500">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">{{ action }} Employee</button>
+        <a class="btn btn-outline" href="{% url 'employee_list' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

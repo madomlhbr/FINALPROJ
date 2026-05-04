@@ -1,0 +1,95 @@
+{% extends 'payroll_app/base.html' %}
+{% block title %}Payslip #{{ payslip.pk }} — Shemu{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>View Payslip</h1>
+  <a href="{% url 'payslip_list' %}" class="btn btn-outline">← Back to Payslips</a>
+</div>
+
+<div class="page-content">
+  <div class="payslip-doc">
+
+    <!-- Header -->
+    <div class="payslip-doc-header">
+      <h2>Shemu Payroll System</h2>
+      <p>Official Payslip Document</p>
+    </div>
+
+    <!-- Section 1: General Details -->
+    <div class="payslip-meta">
+      <div>
+        <strong>{{ payslip.id_number.name }}</strong><br>
+        ID: {{ payslip.id_number.id_number }}
+      </div>
+      <div style="text-align:right;">
+        <strong>{{ payslip.month }} {{ payslip.date_range }}, {{ payslip.year }}</strong><br>
+        Payslip ID: #{{ payslip.pk }} &nbsp;
+        {% if payslip.pay_cycle == 1 %}
+        <span class="badge badge-teal">Cycle 1</span>
+        {% else %}
+        <span class="badge badge-amber">Cycle 2</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Section 2: Earnings -->
+    <div class="payslip-section">
+      <h3>Earnings</h3>
+      <div class="payslip-line">
+        <span>Base Pay (½ of ₱{{ payslip.rate|floatformat:2 }})</span>
+        <span>₱{{ payslip.getCycleRate|floatformat:2 }}</span>
+      </div>
+      <div class="payslip-line">
+        <span>Allowance</span>
+        <span>₱{{ payslip.earnings_allowance|floatformat:2 }}</span>
+      </div>
+      <div class="payslip-line">
+        <span>Overtime</span>
+        <span>₱{{ payslip.overtime|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <!-- Section 3: Deductions -->
+    <div class="payslip-section">
+      <h3>Deductions</h3>
+
+      {% if payslip.pay_cycle == 1 %}
+      <div class="payslip-line">
+        <span>Pag-ibig</span>
+        <span>₱{{ payslip.pag_ibig|floatformat:2 }}</span>
+      </div>
+      {% endif %}
+
+      {% if payslip.pay_cycle == 2 %}
+      <div class="payslip-line">
+        <span>PhilHealth (4%)</span>
+        <span>₱{{ payslip.deductions_health|floatformat:2 }}</span>
+      </div>
+      <div class="payslip-line">
+        <span>SSS (4.5%)</span>
+        <span>₱{{ payslip.sss|floatformat:2 }}</span>
+      </div>
+      {% endif %}
+
+      <div class="payslip-line">
+        <span>Withholding Tax (20%)</span>
+        <span>₱{{ payslip.deductions_tax|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <!-- Section 4: Net Pay -->
+    <div class="payslip-section">
+      <div class="payslip-line total">
+        <span>Net Pay</span>
+        <strong>₱{{ payslip.total_pay|floatformat:2 }}</strong>
+      </div>
+    </div>
+
+    <div class="payslip-actions">
+      <a href="{% url 'payslip_list' %}" class="btn btn-outline">← Back</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

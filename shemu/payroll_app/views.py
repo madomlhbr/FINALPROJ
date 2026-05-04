@@ -24,6 +24,7 @@ def employee_list(request):
     employees = Employee.objects.all().order_by('name')
     return render(request, 'payroll_app/employee_list.html', {
         'employees': employees,
+        'is_admin': _admin_required(request),
     })
 
 
@@ -50,6 +51,7 @@ def employee_create(request):
                 messages.error(request, e)
             return render(request, 'payroll_app/employee_form.html', {
                 'action': 'Create', 'form_data': request.POST,
+                'is_admin': _admin_required(request),
             })
 
         Employee.objects.create(
@@ -62,6 +64,7 @@ def employee_create(request):
 
     return render(request, 'payroll_app/employee_form.html', {
         'action': 'Create', 'form_data': {},
+        'is_admin': _admin_required(request),
     })
 
 
@@ -90,6 +93,7 @@ def employee_update(request, pk):
                 messages.error(request, e)
             return render(request, 'payroll_app/employee_form.html', {
                 'action': 'Update', 'employee': employee, 'form_data': request.POST,
+                'is_admin': _admin_required(request),
             })
 
         employee.name      = name
@@ -108,6 +112,7 @@ def employee_update(request, pk):
             'id_number': employee.id_number,
             'rate':      employee.rate,
             'allowance': employee.allowance if employee.allowance else '',
+            'is_admin': _admin_required(request),
         },
     })
 

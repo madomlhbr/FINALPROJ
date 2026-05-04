@@ -1,0 +1,41 @@
+{% extends 'payroll_app/base.html' %} 
+{% block content %} 
+  
+<!-- Section 1: General Details (Spec §II.3.g) --> 
+<div class="payslip-meta"> 
+  <div>NAME: {{ payslip.id_number.name }}</div> 
+  <div>ID NUMBER: {{ payslip.id_number.id_number }}</div> 
+  <div>DATE: {{ payslip.month }} {{ payslip.date_range }}, {{ payslip.year 
+}}</div> 
+  <div>PAYSLIP ID: #{{ payslip.pk }}</div> 
+</div> 
+  
+<!-- Section 2: Earnings --> 
+<div class="payslip-section"> 
+  <div>Base Pay (1/2 of rate): P{{ payslip.getCycleRate|floatformat:2 }}</div> 
+  <div>Allowance:              P{{ payslip.earnings_allowance|floatformat:2 
+}}</div> 
+  <div>Overtime:               P{{ payslip.overtime|floatformat:2 }}</div> 
+</div> 
+  
+<!-- Section 3: Deductions — cycle-specific (Spec §II.3.g(i)) --> 
+<div class="payslip-section"> 
+  <!-- Cycle 1 only: Pag-ibig --> 
+  {% if payslip.pay_cycle == 1 %} 
+  <div>Pag-ibig: P{{ payslip.pag_ibig|floatformat:2 }}</div> 
+  {% endif %} 
+  
+  <!-- Cycle 2 only: PhilHealth + SSS --> 
+  {% if payslip.pay_cycle == 2 %} 
+  <div>PhilHealth (4%): P{{ payslip.deductions_health|floatformat:2 }}</div> 
+  <div>SSS (4.5%):      P{{ payslip.sss|floatformat:2 }}</div> 
+  {% endif %} 
+  
+  <!-- Both cycles: Tax --> 
+<div>Withholding Tax (20%): P{{ payslip.deductions_tax|floatformat:2 }}</div> 
+</div> 
+<!-- Section 4: Net Pay (bold per spec) --> 
+<div class="payslip-line total"> 
+<strong>Net Pay: P{{ payslip.total_pay|floatformat:2 }}</strong> 
+</div> 
+{% endblock %}

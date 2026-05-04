@@ -440,9 +440,6 @@ tbody tr:hover { background: var(--gray-50); }
   align-items: center;
   justify-content: center;
   background: var(--teal-900);
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(26,153,121,.3) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(245,158,11,.15) 0%, transparent 50%);
 }
 .login-card {
   background: #fff;

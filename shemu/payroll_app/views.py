@@ -56,17 +56,17 @@ def employee_create(request):
             })
 
         Employee.objects.create(
-    name=name, id_number=id_number, rate=float(rate),
-    allowance=float(allowance) if allowance else None,
-    overtime_pay=0.0,
-    )
+            name=name, id_number=id_number, rate=float(rate),
+            allowance=float(allowance) if allowance else None,
+            overtime_pay=0.0,
+        )
 
-# Auto-create Django login for this employee
-    if not User.objects.filter(username=id_number).exists():
-        User.objects.create_user(username=id_number, password='shemu123')
-    
-    messages.success(request, f'Employee {name} created. Login: {id_number} / shemu123')
-    return redirect('employee_list')
+        # Auto-create Django login for this employee
+        if not User.objects.filter(username=id_number).exists():
+            User.objects.create_user(username=id_number, password='shemu123')
+
+        messages.success(request, f'Employee {name} created. Login: {id_number} / shemu123')
+        return redirect('employee_list')
 
     return render(request, 'payroll_app/employee_form.html', {
         'action': 'Create', 'form_data': {},
@@ -113,12 +113,12 @@ def employee_update(request, pk):
     return render(request, 'payroll_app/employee_form.html', {
         'action': 'Update',
         'employee': employee,
+        'is_admin': _admin_required(request),
         'form_data': {
             'name':      employee.name,
             'id_number': employee.id_number,
             'rate':      employee.rate,
             'allowance': employee.allowance if employee.allowance else '',
-            'is_admin': _admin_required(request),
         },
     })
 

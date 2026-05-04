@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Payroll Creation</h2>
+    <!-- Messages for existing payslip errors -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="mb-5">
+        {% csrf_token %}
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label>Payroll for:</label>
+                <select name="payroll_for" class="form-control" required>
+                    <option value="All">All Employees</option>
+                    {% for emp in employees %}
+                        <option value="{{ emp.id_number }}">{{ emp.id_number }} - {{ emp.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <label>Month:</label>
+                <select name="month" class="form-control" required>
+                    <option value="" disabled selected>Select Month</option>
+                    {% for m in months %}
+                        <option value="{{ m }}">{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <label>Year:</label>
+                <input type="text" name="year" class="form-control" required>
+            </div>
+            <div class="col-auto">
+                <label>Cycle:</label>
+                <select name="cycle" class="form-control" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div class="col-auto mt-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <h2>Payslips Summary</h2>
+    <table class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th>ID Number</th>
+                <th>Date</th>
+                <th>Cycle</th>
+                <th>Total Pay</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ps in payslips %}
+            <tr>
+                <td>{{ ps.id_number.id_number }}</td>
+                <td>{{ ps.month }} {{ ps.date_range }}, {{ ps.year }}</td>
+                <td>{{ ps.pay_cycle }}</td>
+                <td>{{ ps.total_pay }}</td>
+                <td>
+                    <a href="{% url 'view_payslip' ps.pk %}" class="btn btn-info btn-sm">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

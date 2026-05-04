@@ -65,7 +65,11 @@ class Payslip(models.Model):
     def getCycleRate(self): 
         """Returns 1/2 of the monthly rate (per-cycle base pay).""" 
         return self.rate / 2 
-  
+    
+    def get_total_deductions(self):
+        gross_pay = self.getCycleRate() + self.earnings_allowance + self.overtime
+        return gross_pay - self.total_pay
+    
     def getEarnings_allowance(self): return self.earnings_allowance 
     def getDeductions_tax(self):     return self.deductions_tax 
     def getDeductions_health(self):  return self.deductions_health 

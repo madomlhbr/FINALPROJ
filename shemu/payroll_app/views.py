@@ -46,6 +46,11 @@ def employee_create(request):
         if not rate:      errors.append('Rate is required.')
         if Employee.objects.filter(id_number=id_number).exists():
             errors.append('An employee with that ID Number already exists.')
+        
+        if rate and float(rate) < 0:
+            errors.append('Rate cannot be negative.')
+        if allowance and float(allowance) < 0:
+            errors.append('Allowance cannot be negative.')
 
         if errors:
             for e in errors:
@@ -93,6 +98,11 @@ def employee_update(request, pk):
         if not rate:      errors.append('Rate is required.')
         if Employee.objects.filter(id_number=id_number).exclude(pk=pk).exists():
             errors.append('An employee with that ID Number already exists.')
+        
+        if rate and float(rate) < 0:
+            errors.append('Rate cannot be negative.')
+        if allowance and float(allowance) < 0:
+            errors.append('Allowance cannot be negative.')
 
         if errors:
             for e in errors:
@@ -145,6 +155,10 @@ def employee_add_overtime(request, pk):
 
     if request.method == 'POST':
         hours_str = request.POST.get('overtime_hours', '').strip()
+        
+        if hours < 0:
+            messages.error(request, 'Overtime hours cannot be negative.')
+            return redirect('employee_list')
         if not hours_str:
             messages.error(request, 'Please enter the number of overtime hours.')
             return redirect('employee_list')

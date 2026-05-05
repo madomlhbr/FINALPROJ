@@ -120,7 +120,7 @@ def employee_update(request, pk):
         messages.success(request, f'Employee {name} updated.')
         return redirect('employee_list')
 
-    return render(request, 'payroll_app/employee_form.html', {
+    return render(request, 'payroll_app/update_employee.html', {
         'action': 'Update',
         'employee': employee,
         'is_admin': _admin_required(request),
@@ -293,7 +293,7 @@ def payslip_list(request):
 
 
 @login_required
-def payslip_view(request, pk):
+def view_payslips(request, pk):
     payslip = get_object_or_404(Payslip, pk=pk)
     is_admin = _admin_required(request)
 
@@ -302,7 +302,7 @@ def payslip_view(request, pk):
             messages.error(request, 'You do not have permission to view that payslip.')
             return redirect('payslip_list')
 
-    return render(request, 'payroll_app/payslip_view.html', {
+    return render(request, 'payroll_app/view_payslips.html', {
         'payslip': payslip,
         'is_admin': is_admin,
     })

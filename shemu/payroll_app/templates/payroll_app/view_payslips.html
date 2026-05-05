@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-
+{% extends 'payroll_app/base.html' %}
+{% block title %}Payslip #{{ payslip.pk }} — Shemu{% endblock %}
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -17,9 +17,15 @@
     <hr>
     
     <div class="row mt-4">
+        <!-- Everything is now inside this single column container -->
         <div class="col-md-8">
-            <!-- 2) Earnings -->
-            <h5>EARNINGS:</h5>
+            
+            <!-- 2) Earnings & Amount Headers (Aligned together!) -->
+            <div class="d-flex justify-content-between align-items-end mb-2">
+                <h5 class="mb-0">EARNINGS:</h5>
+                <h5 class="mb-0">AMOUNT</h5>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <span>Base Pay</span>
                 <span>{{ payslip.getCycleRate }}</span>
@@ -77,9 +83,6 @@
                 <span>NET PAY:</span>
                 <span>PHP {{ payslip.total_pay }}</span>
             </div>
-        </div>
-        <div class="col-md-4 text-center">
-            <h5 class="mt-4">AMOUNT</h5>
         </div>
     </div>
 </div>

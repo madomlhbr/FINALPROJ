@@ -12,5 +12,5 @@ name="employee_delete"),
 name="employee_overtime"), 
   
 path("payslips/", views.payslip_list, name="payslip_list"), 
-path("payslips/<int:pk>/", views.payslip_view, name="payslip_view"), 
+path("payslips/<int:pk>/", views.view_payslips, name="view_payslips"), 
 ]

@@ -84,7 +84,7 @@
             {% endif %}
           </td>
           <td>₱{{ ps.total_pay|floatformat:2 }}</td>
-          <td><a href="{% url 'payslip_view' ps.pk %}" class="btn btn-teal btn-sm">View</a></td>
+          <td><a href="{% url 'view_payslips' ps.pk %}" class="btn btn-teal btn-sm">View</a></td>
         </tr>
         {% empty %}
         <tr>

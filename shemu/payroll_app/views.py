@@ -155,10 +155,7 @@ def employee_add_overtime(request, pk):
 
     if request.method == 'POST':
         hours_str = request.POST.get('overtime_hours', '').strip()
-        
-        if hours < 0:
-            messages.error(request, 'Overtime hours cannot be negative.')
-            return redirect('employee_list')
+
         if not hours_str:
             messages.error(request, 'Please enter the number of overtime hours.')
             return redirect('employee_list')
@@ -167,6 +164,10 @@ def employee_add_overtime(request, pk):
             hours = float(hours_str)
         except ValueError:
             messages.error(request, 'Overtime hours must be a number.')
+            return redirect('employee_list')
+
+        if hours < 0:
+            messages.error(request, 'Overtime hours cannot be negative.')
             return redirect('employee_list')
 
         overtime_amount = (employee.rate / 160) * 1.5 * hours
